@@ -1,16 +1,55 @@
-{% extends "base.html" %}
-
-{% block title %}Libros{% endblock %}
+{% extends 'base.html' %}
 
 {% block content %}
-<h1>Libros</h1>
-
-<div class="grid-container">
-    {% for libro in libros %}
-        <div class="card">
-            <h1>Titulo: {{ libro.titulo }}</h1><div class="autor">Autor: {{ libro.autor }}</div><div class="resumen">{{ libro.resumen }}</div>
-        </div>
-    {% endfor %}
+<div class="container">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Nuestra Colección</h2>
+        <a href="{{ url_for('libros.crear') }}" style="background: #333; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+            + Añadir Libro
+        </a>
     </div>
 
+    <div class="grid-container">
+        {% for libro in libros %}
+            <div class="card">
+                <h1>{{ libro.titulo }}</h1>
+                <p class="autor">Por {{ libro.autor }}</p>
+                
+                <div style="margin-bottom: 10px; font-size: 0.85rem; color: #666;">
+                    <span style="background: #e0e0e0; padding: 2px 6px; border-radius: 4px;">{{ libro.genero }}</span>
+                    <span>({{ libro.anio }})</span>
+                </div>
+
+                <p class="resumen">
+                    {% if libro.resumen %}
+                        {{ libro.resumen[:100] }}...
+                    {% else %}
+                        Sin resumen disponible.
+                    {% endif %}
+                </p>
+
+                <div style="margin-top: auto; padding-top: 10px; border-top: 1px solid #eee;">
+                    {% if libro.disponible %}
+                        <a href="{{ url_for('libros.prestar', id=libro.id) }}" 
+                           style="display: block; width: 100%; text-align: center; background: #007bff; color: white; padding: 8px; text-decoration: none; border-radius: 4px;">
+                           Prestar Libro
+                        </a>
+                    {% else %}
+                        <div style="text-align: center; font-size: 0.9rem; margin-bottom: 5px;">
+                            <span style="color: #666;">Prestado a:</span><br>
+                            <strong>{{ libro.socio.nombre if libro.socio else 'Desconocido' }}</strong>
+                        </div>
+
+                    <a href="{{ url_for('libros.devolver', id=libro.id) }}" 
+                    style="display: block; width: 100%; text-align: center; background: #ffc107; color: #333; padding: 8px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                    ↻ Devolver Libro
+                    </a>
+                {% endif %}
+                </div>
+            </div>
+        {% else %}
+            <p>No hay libros en la biblioteca todavía.</p>
+        {% endfor %}
+        </div>
+</div>
 {% endblock %}

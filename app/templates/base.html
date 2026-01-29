@@ -8,19 +8,45 @@
 <body>
 
 <header>
-    <nav>
-        <a href="{{ url_for('navigation.inicio') }}">Inicio</a>
-        <a href="{{ url_for('libros.listar') }}">Libros</a>
-        <a href="{{ url_for('libros.grid') }}">Libros Grid</a>
+    <nav class="nav-container">
+        <div class="nav-left">
+            <a href="{{ url_for('navigation.inicio') }}">Inicio</a>
+            <a href="{{ url_for('libros.grid') }}">Libros</a>
+            {% if current_user.is_authenticated %}
+    <li><a href="{{ url_for('socios.crear') }}">Registrar Socio</a></li>
+{% endif %}
+        </div>
+
+        <div class="nav-right">
+            {% if current_user.is_authenticated %}
+                <span style="color: white;">Hola, {{ current_user.username }}</span>
+                <a href="{{ url_for('auth.logout') }}" class="btn-logout">Cerrar Sesión</a>
+            {% else %}
+                <a href="{{ url_for('auth.login') }}">Iniciar Sesión</a>
+                <a href="{{ url_for('auth.registro') }}">Registrarse</a>
+            {% endif %}
+        </div>
     </nav>
 </header>
 
 <main>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flashes">
+                {% for message in messages %}
+                    <li>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+
     {% block content %}
     {% endblock %}
 </main>
+
 <footer>
     <p>&copy; 2025 Mi aplicación</p>
 </footer>
+
 </body>
 </html>

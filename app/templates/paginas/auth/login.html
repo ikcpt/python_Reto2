@@ -1,23 +1,26 @@
-{% block contenido %}
+{% extends 'base.html' %}
+
+{% block content %}
+
 <div class="container">
-    <h2>Iniciar sesion (Admin)</h2>
+    <h2>Iniciar sesión</h2>
+    
     <form method="POST">
-        {{ form.hidden_tag()}}
+        {{ form.hidden_tag() }}
 
-        <div>
-            {{ form.username.label}}
-            {{ form.username(size=20) }}
-        </div>
+        <p>
+            {{ form.username.label }} <br>
+            {{ form.username(size=30) }}
+        </p>
 
-        <div>
-            {{ form.password.label}}
-            {{ form.password(size=20) }}
-        </div>
+        <p>
+            {{ form.password.label }} <br>
+            {{ form.password(size=30) }}
+        </p>
 
-        <div>
-            {{ form.submit() }}
-        </div>
+        <p>{{ form.submit() }}</p>
     </form>
-    <p>¿Eres nuevo? <a href="{{ url_for('auth.registro')}}">Crear cuenta de admin</a></p>
+
+    <p>¿No tienes cuenta? <a href="{{ url_for('auth.registro') }}">Regístrate aquí</a></p>
 </div>
 {% endblock %}

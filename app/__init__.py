@@ -1,31 +1,54 @@
-
 from flask import Flask
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
-
+from flask_login import LoginManager   
 
 db = SQLAlchemy()
+login_manager = LoginManager()        
 
 def create_app():
-
     app = Flask(__name__)
     CORS(app)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///pyhton.db"
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False # evitar warning de SQLAlchemy
-     # 🔐 CLAVE SECRETA (obligatoria para Flask-WTF)
-    app.config["SECRET_KEY"] = "dev-secret-key"  # luego la convendría cambiarla por una más segura en producción
+    # Configuración
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///python.db"
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False 
+    app.config["SECRET_KEY"] = "dev-secret-key"
 
+    # Inicializar extensiones
     db.init_app(app)
+    login_manager.init_app(app)       
+    login_manager.login_view = 'auth.login' 
 
-    # Registro de los Blueprints
+    # Cargar usuario
+    from app.models.usuario import Usuario
+    @login_manager.user_loader
+    def load_user(user_id):
+        return Usuario.query.get(int(user_id))
+
+    # --- AQUÍ ES DONDE SE PONEN LOS BLUEPRINTS ---
+    
+    # 1. Navigation
     from app.controllers.navigation_controller import navigation_bp
     app.register_blueprint(navigation_bp)
+    
+    # 2. Libros
     from app.controllers.libros_controller import libros_bp
     app.register_blueprint(libros_bp)
+    
+    # 3. API
     from app.controllers.api_controller import api_bp
     app.register_blueprint(api_bp)
-        # Crear las tablas en la base de datos
+    
+    # 4. Auth
+    from app.controllers.auth_controller import auth_bp
+    app.register_blueprint(auth_bp)
+
+    # 5. Socios (AQUÍ ES DONDE TIENE QUE IR)
+    from app.controllers.socios_controller import socios_bp
+    app.register_blueprint(socios_bp)
+
+    # Crear tablas si no existen
     with app.app_context():
         db.create_all()
 

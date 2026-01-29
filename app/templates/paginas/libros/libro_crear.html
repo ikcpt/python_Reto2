@@ -1,10 +1,41 @@
-
-{% extends "base.html" %}
-{% block title %}Editar libro{% endblock %}
-
+{% extends 'base.html' %}
 
 {% block content %}
+<div class="container" style="max-width: 600px; margin: 0 auto;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Añadir Nuevo Libro</h2>
 
-<h1>Crear libro con flask-WTF</h1>
-{%include 'componentes/libro_form.html'%}
+    <form method="POST">
+        {{ form.hidden_tag() }}
+
+        <div style="margin-bottom: 15px;">
+            {{ form.titulo.label(style="font-weight: bold;") }}
+            {{ form.titulo(style="width: 100%; padding: 8px; margin-top: 5px;") }}
+        </div>
+
+        <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+            <div style="flex: 1;">
+                {{ form.autor.label(style="font-weight: bold;") }}
+                {{ form.autor(style="width: 100%; padding: 8px; margin-top: 5px;") }}
+            </div>
+            <div style="flex: 1;">
+                {{ form.genero.label(style="font-weight: bold;") }}
+                {{ form.genero(style="width: 100%; padding: 8px; margin-top: 5px;") }}
+            </div>
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form.anio.label(style="font-weight: bold;") }}
+            {{ form.anio(style="width: 100%; padding: 8px; margin-top: 5px;") }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form.resumen.label(style="font-weight: bold;") }}
+            {{ form.resumen(style="width: 100%; padding: 8px; margin-top: 5px;", rows="4") }}
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 10px; background-color: #333; color: white; border: none; cursor: pointer; font-size: 16px;">
+            Guardar Libro
+        </button>
+    </form>
+</div>
 {% endblock %}

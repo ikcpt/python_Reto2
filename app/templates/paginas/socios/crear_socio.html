@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin: 40px auto;">
+    <h2>Registrar Nuevo Socio</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <div style="margin-bottom: 15px;">
+            {{ form.nombre.label(style="font-weight: bold;") }}
+            {{ form.nombre(style="width: 100%; padding: 8px;") }}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form.email.label(style="font-weight: bold;") }}
+            {{ form.email(style="width: 100%; padding: 8px;") }}
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer;">
+            Guardar Socio
+        </button>
+    </form>
+</div>
+{% endblock %}

@@ -1,100 +1,134 @@
-    :root {
-            --bg: #f4f6f8;
-            --card: #ffffff;
-            --primary: #c0beeb;
-            --secondary: #64748b;
-            --text: #1e293b;
-        }
-  *{    
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      
+:root {
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --primary: #c0beeb;
+    --secondary: #64748b;
+    --text: #1e293b;
+}
 
-  }
-  html{
-      font-family: Arial, sans-serif;
-        font-size: clamp(16px, 4vw, 18px);
-  }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-  
-  header {
-            background: #333;
-            padding: 1rem;
-        }
-         header a {
-            color: white;
-            margin-right: 1rem;
-            text-decoration: none;
-        }
-        header a:hover {
-            text-decoration: underline;
-        }
-        main {
-                max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        footer {
-            background: #333;
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
+html {
+    font-family: Arial, sans-serif;
+    font-size: clamp(16px, 4vw, 18px);
+}
 
-    .grid-container {
-           display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-    }
+body {
+    background-color: var(--bg);
+}
 
-    .grid-container h1{
-        text-align: center;
-        background-color: rgba(34, 33, 33, 0.719);
-        color: white;
-        padding: 0.5rem;
-        border-radius: 5px 5px 0 0;
-    }
-    .grid-item{
-        background-color: #f4f4f4;
-    
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-shadow:  0 0 10px rgba(0, 0, 0, 0.1);
-    }
-    
-        .card {
-            background: var(--card);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-                .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
-        }
-        
-        .card h1 {
-            margin: 0 0 0.5rem;
-            font-size: 1.2rem;
-            color: var(--primary);
-        }
+/* --- AQUÍ ESTÁ EL ARREGLO DEL MENÚ --- */
 
-        .autor {
-            font-size: 0.9rem;
-            color: var(--secondary);
-            margin-bottom: 1rem;
-        }
+header {
+    background: #333;
+    /* Quitamos el padding aquí para que lo maneje el contenedor flexible */
+    width: 100%;
+}
 
-        .resumen {
-            flex-grow: 1;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            margin-bottom: 1rem;
-        }
+/* Esta clase controla la distribución */
+.nav-container {
+    display: flex;              /* 1. Activa el modo flexible */
+    justify-content: space-between; /* 2. Empuja los grupos a los extremos */
+    align-items: center;        /* 3. Centra verticalmente */
+    padding: 1rem;
+    max-width: 1200px;          /* Opcional: para que no se estire infinito en pantallas gigantes */
+    margin: 0 auto;             /* Centra la barra si usas max-width */
+}
+
+/* Esto asegura que los enlaces dentro de cada grupo estén alineados */
+.nav-left, .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px; /* Separación entre botones */
+}
+
+header a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+header a:hover {
+    text-decoration: underline;
+    color: var(--primary); /* Un toque de color al pasar el ratón */
+}
+
+/* Botón de cerrar sesión (opcional, para que destaque un poco) */
+.btn-logout {
+    color: #ff6b6b !important; /* Rojo suave */
+}
+
+/* --- RESTO DE TU CSS (GRID Y CARDS) --- */
+
+main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    /* Añadimos padding-bottom para que el footer no tape el contenido */
+    padding-bottom: 80px; 
+}
+
+footer {
+    background: #333;
+    color: white;
+    text-align: center;
+    padding: 1rem;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* .grid-item no parecía usarse en tu HTML, pero lo dejo por si acaso */
+.grid-item {
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+}
+
+.card h1 {
+    margin: 0 0 0.5rem;
+    font-size: 1.2rem;
+    color: var(--primary); /* Usando tu variable */
+    /* Si el color primario es muy claro (#c0beeb), quizás quieras uno más oscuro para texto */
+    color: #6a5acd; /* Ejemplo: SlateBlue (más legible) */
+}
+
+.autor {
+    font-size: 0.9rem;
+    color: var(--secondary);
+    margin-bottom: 1rem;
+}
+
+.resumen {
+    flex-grow: 1;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+    color: var(--text);
+}

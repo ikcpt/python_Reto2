@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin: 40px auto; text-align: center;">
+    
+    <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h2 style="margin-top: 0;">Prestamo de Libro</h2>
+        <h3 style="color: #333;">{{ libro.titulo }}</h3>
+        <p style="color: #666;">Autor: {{ libro.autor }}</p>
+    </div>
+
+    <form method="POST" style="text-align: left;">
+        {{ form.hidden_tag() }}
+
+        <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; display: block; margin-bottom: 5px;">
+                ¿A quién se lo prestamos?
+            </label>
+            {{ form.socio_id(style="width: 100%; padding: 10px; font-size: 16px;") }}
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button type="submit" style="flex: 1; padding: 10px; background: #28a745; color: white; border: none; cursor: pointer; border-radius: 4px;">
+                Confirmar Préstamo
+            </button>
+            
+            <a href="{{ url_for('libros.grid') }}" style="flex: 1; padding: 10px; background: #6c757d; color: white; text-align: center; text-decoration: none; border-radius: 4px;">
+                Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+{% endblock %}

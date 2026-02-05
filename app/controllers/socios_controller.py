@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
-from app.services.socio_service import SocioService  # <-- Solo importamos el servicio
+from app.services.socio_service import SocioService 
 from app.forms.socio_form import SocioForm
+from app.forms.busqueda_socio_form import BusquedaSocioForm
 
 socios_bp = Blueprint('socios', __name__, url_prefix='/socios')
 
@@ -28,5 +29,4 @@ def editar(id):
         flash('Socio actualizado', 'success')
         return redirect(url_for('socios.grid'))
     
-    # Recuerda que arreglamos el nombre del template en el paso anterior
     return render_template('paginas/socios/socio_editar.html', form=form, socio=socio)

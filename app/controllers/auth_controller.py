@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
-from flask_login import login_user, logout_user, login_required, current_user
-from app.models.usuario import Usuario
-from app.forms.auth_form import LoginForm, RegistroForm
-from app import db
+from flask import Blueprint, render_template, redirect, url_for, flash
+from flask_login import login_user, logout_user
+from app.forms.login_form import LoginForm
+from app.forms.registro_form import RegistroForm
+from app.services.auth_service import AuthService
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -12,12 +12,11 @@ def login():
     form = LoginForm()
 
     if form.validate_on_submit():
-        user = Usuario.query.filter_by(username=form.username.data).first()
+        user = AuthService.obtener_por_username(form.username.data)
 
         if user and user.check_password(form.password.data):
             login_user(user)
             flash('Has iniciado sesion correctamente.')
-            # Asegúrate de que 'libros.inicio' existe en tus rutas
             return redirect(url_for('libros.grid'))
 
         flash('Usuario o contraseña invalidos.')
@@ -30,20 +29,15 @@ def registro():
     form = RegistroForm()
     
     if form.validate_on_submit():
-        # Comprobar si el usuario ya existe
-        if Usuario.query.filter_by(username=form.username.data).first():
+        if AuthService.obtener_por_username(form.username.data):
             flash('El usuario ya existe')
             return redirect(url_for('auth.registro'))
         
-        # IMPORTANTE: Aquí guardamos username Y email
-        nuevo_usuario = Usuario(
+        AuthService.crear_usuario(
             username=form.username.data,
-            email=form.email.data
+            email=form.email.data,
+            password=form.password.data
         )
-        nuevo_usuario.set_password(form.password.data)
-
-        db.session.add(nuevo_usuario)
-        db.session.commit()
 
         flash('Usuario creado. Por favor inicia sesion.')
         return redirect(url_for('auth.login'))

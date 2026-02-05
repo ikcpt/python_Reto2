@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from app.services.libros_service import LibroService
 from app.forms.libro_form import LibroForm
 from app.forms.prestar_libro_form import PrestarLibroForm
+from app.forms.busqueda_libro_form import BusquedaLibroForm
 
 libros_bp = Blueprint('libros', __name__, url_prefix='/libros')
 

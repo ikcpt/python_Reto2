@@ -10,10 +10,10 @@
 <header>
     <nav class="nav-container">
         <div class="nav-left">
-            <a href="{{ url_for('navigation.inicio') }}">Inicio</a>
+            <a href="{{ url_for('navigation.home') }}">Inicio</a>
             <a href="{{ url_for('libros.grid') }}">Libros</a>
             {% if current_user.is_authenticated %}
-    <li><a href="{{ url_for('socios.crear') }}">Registrar Socio</a></li>
+<a href="{{ url_for('socios.grid') }}">Socios</a>
 {% endif %}
         </div>
 

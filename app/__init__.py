@@ -47,6 +47,9 @@ def create_app():
     # 5. Socios (AQUÍ ES DONDE TIENE QUE IR)
     from app.controllers.socios_controller import socios_bp
     app.register_blueprint(socios_bp)
+    
+    from app.api.routes import api_bp
+    app.register_blueprint(api_bp)
 
     # Crear tablas si no existen
     with app.app_context():

@@ -1,70 +1,61 @@
-from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import login_required
-from app import db
-from app.models.libro import Libro
-from app.models.socio import Socio
-from app.forms.libro_form import LibroForm, PrestarLibroForm
+from flask import Blueprint, render_template, request, flash, redirect, url_for
+# CORREGIDO: Añadida la 's' en libros_service
+from app.services.libros_service import LibroService
+from app.forms.libro_form import LibroForm
+from app.forms.prestar_libro_form import PrestarLibroForm
 
 libros_bp = Blueprint('libros', __name__, url_prefix='/libros')
 
 @libros_bp.route('/grid')
 def grid():
-    libros = Libro.query.all()
-    # CAMBIO AQUÍ: Usamos tu nombre real 'librosGrid.html'
+    busqueda = request.args.get('search', '')
+    solo_disponibles = request.args.get('disponibles')
+    
+    libros = LibroService.obtener_todos(busqueda, solo_disponibles)
+    
     return render_template('paginas/libros/librosGrid.html', libros=libros)
 
-@libros_bp.route('/listado')
-def listar():
-    libros = Libro.query.all()
-    # CAMBIO AQUÍ: Asumo que 'libros.html' es tu lista simple
-    return render_template('paginas/libros/libros.html', libros=libros)
-
 @libros_bp.route('/crear', methods=['GET', 'POST'])
-@login_required 
 def crear():
     form = LibroForm()
     if form.validate_on_submit():
-        nuevo_libro = Libro(
-            titulo=form.titulo.data,
-            autor=form.autor.data,
-            genero=form.genero.data,
-            anio=form.anio.data,
-            resumen=form.resumen.data,
-            disponible=True
-        )
-        db.session.add(nuevo_libro)
-        db.session.commit()
-        flash('Libro creado correctamente')
+        LibroService.crear_libro(form)
+        flash('Libro creado correctamente', 'success')
         return redirect(url_for('libros.grid'))
-    
     return render_template('paginas/libros/libro_crear.html', form=form)
 
+@libros_bp.route('/editar/<int:id>', methods=['GET', 'POST'])
+def editar(id):
+    libro = LibroService.obtener_por_id(id)
+    form = LibroForm(obj=libro)
+    
+    if form.validate_on_submit():
+        LibroService.editar_libro(id, form)
+        flash('Libro actualizado', 'success')
+        return redirect(url_for('libros.grid'))
+        
+    return render_template('paginas/libros/libro_editar.html', form=form, libro=libro)
+
+@libros_bp.route('/eliminar/<int:id>')
+def eliminar(id):
+    LibroService.eliminar_libro(id)
+    flash('Libro eliminado', 'danger')
+    return redirect(url_for('libros.grid'))
+
 @libros_bp.route('/prestar/<int:id>', methods=['GET', 'POST'])
-@login_required
 def prestar(id):
-    libro = Libro.query.get_or_404(id)
+    libro = LibroService.obtener_por_id(id)
     form = PrestarLibroForm()
     
-    socios = Socio.query.all()
-    form.socio_id.choices = [(s.id, f"{s.nombre} ({s.email})") for s in socios]
-
     if form.validate_on_submit():
-        libro.socio_id = form.socio_id.data
-        libro.disponible = False
-        db.session.commit()
-        flash(f'Libro prestado correctamente')
+        LibroService.prestar_libro(id, form.socio_id.data)
+        flash('Libro prestado correctamente', 'success')
         return redirect(url_for('libros.grid'))
-    
-    return render_template('paginas/libros/libro_prestar.html', form=form, libro=libro)
+        
+    return render_template('paginas/libros/prestar.html', form=form, libro=libro)
 
 @libros_bp.route('/devolver/<int:id>')
-@login_required
 def devolver(id):
-    libro = Libro.query.get_or_404(id)
-    if not libro.disponible:
-        libro.socio_id = None
-        libro.disponible = True
-        db.session.commit()
-        flash(f'Libro devuelto correctamente. ¡Gracias por tu prestamo!')
-        
+    LibroService.devolver_libro(id)
+    flash('Libro devuelto a la biblioteca', 'info')
     return redirect(url_for('libros.grid'))

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container" style="max-width: 500px; margin: 40px auto;">
+    <h2>Editar Socio: {{ socio.nombre }}</h2>
+
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        
+        <div style="margin-bottom: 15px;">
+            {{ form.nombre.label(style="font-weight: bold;") }}
+            {{ form.nombre(style="width: 100%; padding: 8px;") }}
+            {% for error in form.nombre.errors %}
+                <span style="color: red; font-size: 0.8rem;">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <div style="margin-bottom: 15px;">
+            {{ form.email.label(style="font-weight: bold;") }}
+            {{ form.email(style="width: 100%; padding: 8px;") }}
+            {% for error in form.email.errors %}
+                <span style="color: red; font-size: 0.8rem;">{{ error }}</span>
+            {% endfor %}
+        </div>
+
+        <button type="submit" style="width: 100%; padding: 10px; background: #007bff; color: white; border: none; cursor: pointer; font-weight: bold; border-radius: 4px;">
+            Guardar Cambios
+        </button>
+        
+        <a href="{{ url_for('socios.grid') }}" style="display:block; text-align:center; margin-top:10px; text-decoration: none; color: #666;">
+            Cancelar
+        </a>
+    </form>
+</div>
+{% endblock %}

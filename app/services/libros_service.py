@@ -1,38 +1,71 @@
-from sqlalchemy import func
 from app import db
 from app.models.libro import Libro
 
+class LibroService:
+    
+    @staticmethod
+    def obtener_todos(busqueda=None, solo_disponibles=False):
+        # Empezamos la consulta base
+        query = Libro.query
+        
+        # Aplicamos filtro de búsqueda si existe
+        if busqueda:
+            query = query.filter(Libro.titulo.ilike(f'%{busqueda}%'))
+        
+        # Aplicamos filtro de disponibilidad
+        if solo_disponibles:
+            query = query.filter(Libro.disponible == True)
+            
+        return query.all()
 
+    @staticmethod
+    def obtener_por_id(id):
+        return Libro.query.get_or_404(id)
 
-def listar_libros():
-    return Libro.query.all()
-    #return Libro.query.order_by(func.lower(Libro.titulo)).all()
+    @staticmethod
+    def crear_libro(datos_form):
+        nuevo_libro = Libro(
+            titulo=datos_form.titulo.data,
+            autor=datos_form.autor.data,
+            genero=datos_form.genero.data,
+            anio=datos_form.anio.data,
+            resumen=datos_form.resumen.data,
+            disponible=True
+        )
+        db.session.add(nuevo_libro)
+        db.session.commit()
+        return nuevo_libro
 
-def obtener_libro(id):
-    return Libro.query.get(id)
+    @staticmethod
+    def editar_libro(id, datos_form):
+        libro = Libro.query.get_or_404(id)
+        libro.titulo = datos_form.titulo.data
+        libro.autor = datos_form.autor.data
+        libro.genero = datos_form.genero.data
+        libro.anio = datos_form.anio.data
+        libro.resumen = datos_form.resumen.data
+        db.session.commit()
+        return libro
 
+    @staticmethod
+    def eliminar_libro(id):
+        libro = Libro.query.get_or_404(id)
+        db.session.delete(libro)
+        db.session.commit()
 
-def crear_libro(titulo, autor, resumen=None ):
-    libro = Libro(titulo=titulo, autor=autor, resumen=resumen)
-    db.session.add(libro)
-    db.session.commit()
-    return libro
+    @staticmethod
+    def prestar_libro(libro_id, socio_id):
+        libro = Libro.query.get_or_404(libro_id)
+        if libro.disponible:
+            libro.disponible = False
+            libro.socio_id = socio_id
+            db.session.commit()
+            return True
+        return False
 
-def editar_libro(libro_id, titulo=None, autor=None, resumen=None):
-    libro = Libro.query.get(libro_id)
-    if not libro:
-        return None
-
-    if titulo is not None:
-        libro.titulo = titulo
-    if autor is not None:
-        libro.autor = autor
-    if resumen is not None:
-        libro.resumen = resumen
-    db.session.commit()
-    return libro
-
-
-
-
-
+    @staticmethod
+    def devolver_libro(libro_id):
+        libro = Libro.query.get_or_404(libro_id)
+        libro.disponible = True
+        libro.socio_id = None
+        db.session.commit()

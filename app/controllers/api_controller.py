@@ -1,5 +1,7 @@
 from flask import Blueprint, jsonify, request
-from app.services.libros_service import listar_libros
+# CORRECCIÓN: Importamos la clase LibroService, no la función suelta
+from app.services.libros_service import LibroService
+
 api_bp = Blueprint(
     "api",
     __name__,       
@@ -8,5 +10,9 @@ api_bp = Blueprint(
 
 @api_bp.route("/listar", methods=["GET"])
 def listar():
-    libros = listar_libros()
-    return jsonify([l.to_dict() for l in libros])   
+    # CORRECCIÓN: Llamamos al método estático de la clase
+    # Antes: libros = listar_libros()
+    libros = LibroService.obtener_todos()
+    
+    # Esto asume que tu modelo Libro tiene el método .to_dict() (Requisito R21)
+    return jsonify([l.to_dict() for l in libros])

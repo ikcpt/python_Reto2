@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 from app.services.socio_service import SocioService 
 from app.forms.socio_form import SocioForm
-from app.forms.busqueda_socio_form import BusquedaSocioForm
+from flask_login import login_required
+from app.decorators.auth_decorators import admin_required
 
 socios_bp = Blueprint('socios', __name__, url_prefix='/socios')
 
@@ -11,6 +12,8 @@ def grid():
     return render_template('paginas/socios/sociosGrid.html', socios=socios)
 
 @socios_bp.route('/crear', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def crear():
     form = SocioForm()
     if form.validate_on_submit():
@@ -20,6 +23,8 @@ def crear():
     return render_template('paginas/socios/socio_crear.html', form=form)
 
 @socios_bp.route('/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def editar(id):
     socio = SocioService.obtener_por_id(id)
     form = SocioForm(obj=socio)

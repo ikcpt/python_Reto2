@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
-from flask_login import login_user, logout_user
+from flask_login import login_user, logout_user, login_required
+from app.decorators.decorators import admin_required
 from app.forms.login_form import LoginForm
 from app.forms.registro_form import RegistroForm
 from app.services.auth_service import AuthService
@@ -8,6 +9,8 @@ auth_bp = Blueprint('auth', __name__)
 
 # --- LOGIN ---
 @auth_bp.route('/login', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def login():
     form = LoginForm()
 

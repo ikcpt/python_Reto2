@@ -2,7 +2,8 @@ from flask import Blueprint, render_template, request, flash, redirect, url_for
 from app.services.libros_service import LibroService
 from app.forms.libro_form import LibroForm
 from app.forms.prestar_libro_form import PrestarLibroForm
-from app.forms.busqueda_libro_form import BusquedaLibroForm
+from flask_login import login_required
+from app.decorators.auth_decorators import admin_required
 
 libros_bp = Blueprint('libros', __name__, url_prefix='/libros')
 
@@ -16,6 +17,8 @@ def grid():
     return render_template('paginas/libros/librosGrid.html', libros=libros)
 
 @libros_bp.route('/crear', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def crear():
     form = LibroForm()
     if form.validate_on_submit():
@@ -25,6 +28,8 @@ def crear():
     return render_template('paginas/libros/libro_crear.html', form=form)
 
 @libros_bp.route('/editar/<int:id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
 def editar(id):
     libro = LibroService.obtener_por_id(id)
     form = LibroForm(obj=libro)
@@ -37,12 +42,15 @@ def editar(id):
     return render_template('paginas/libros/libro_editar.html', form=form, libro=libro)
 
 @libros_bp.route('/eliminar/<int:id>')
+@login_required
+@admin_required
 def eliminar(id):
     LibroService.eliminar_libro(id)
     flash('Libro eliminado', 'danger')
     return redirect(url_for('libros.grid'))
 
 @libros_bp.route('/prestar/<int:id>', methods=['GET', 'POST'])
+@login_required
 def prestar(id):
     libro = LibroService.obtener_por_id(id)
     form = PrestarLibroForm()

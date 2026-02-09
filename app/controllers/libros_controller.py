@@ -1,5 +1,4 @@
 from flask import Blueprint, render_template, request, flash, redirect, url_for
-# CORREGIDO: Añadida la 's' en libros_service
 from app.services.libros_service import LibroService
 from app.forms.libro_form import LibroForm
 from app.forms.prestar_libro_form import PrestarLibroForm

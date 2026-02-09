@@ -12,6 +12,5 @@ def crear_admin_si_no_existe():
             print("ℹ️ El usuario 'admin' ya existe.")
 
 if __name__ == "__main__":
-    # Llamamos a la función antes de arrancar
     crear_admin_si_no_existe()
     app.run(debug=True)

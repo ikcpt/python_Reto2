@@ -10,7 +10,6 @@ class Libro(db.Model):
     resumen = db.Column(db.Text, nullable=True)
     disponible = db.Column(db.Boolean, default=True)
 
-    # RELACIÓN CON SOCIO
     socio_id = db.Column(db.Integer, db.ForeignKey('socios.id'), nullable=True)
     socio = db.relationship('Socio', backref='prestamos')
 

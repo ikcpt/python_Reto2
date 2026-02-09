@@ -5,14 +5,11 @@ class LibroService:
     
     @staticmethod
     def obtener_todos(busqueda=None, solo_disponibles=False):
-        # Empezamos la consulta base
         query = Libro.query
         
-        # Aplicamos filtro de búsqueda si existe
         if busqueda:
             query = query.filter(Libro.titulo.ilike(f'%{busqueda}%'))
         
-        # Aplicamos filtro de disponibilidad
         if solo_disponibles:
             query = query.filter(Libro.disponible == True)
             

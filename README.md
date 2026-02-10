@@ -7,46 +7,65 @@ pip install -r requirements.txt
 Siempre que se instalen nuevas dependencias hay que actualizar el archivo requirements.txt con:
 pip freeze > requirements.txt
 
+CREDENCIALES ADMINISTRADOR:
+Username: admin
+Password: 1234
+
 # 📚 Sistema de Gestión de Biblioteca (Flask) - Reto 2
 
-Aplicación web desarrollada en Python con Flask para la gestión integral de una biblioteca. Permite administrar libros, socios y gestionar el sistema de préstamos y devoluciones.
+Aplicación web desarrollada en Python con Flask para la gestión integral de una biblioteca. Permite administrar libros, socios y gestionar el sistema de préstamos y devoluciones, con un **sistema de autenticación seguro** para proteger las operaciones administrativas.
+
+## 🔐 Credenciales de Administrador
+El sistema crea automáticamente un usuario administrador al iniciar la aplicación (`run.py`) si no existe.
+
+* **Username:** `admin`
+* **Password:** `1234`
+
+> **Nota:** Es necesario iniciar sesión con estas credenciales para acceder a las funciones de creación, edición y eliminación.
 
 ## 🚀 Características
 
-* **Gestión de Libros:** Alta, baja, modificación y listado de libros.
+* **Gestión de Libros:** Alta, baja, modificación y listado de libros (Protegido por Login).
+* **Gestión de Socios:** Registro y edición de usuarios/socios (Protegido por Login).
+* **Sistema de Préstamos:** Asignación de libros a socios y control de stock.
+* **Autenticación y Seguridad:**
+    * Sistema de Login/Logout con `Flask-Login`.
+    * Protección de rutas mediante decoradores personalizados (`@admin_required`).
+    * Hashing de contraseñas para seguridad en base de datos.
 * **Buscador:** Filtrado de libros por título y disponibilidad.
-* **Gestión de Socios:** Registro y edición de usuarios/socios.
-* **Préstamos:** Sistema para prestar libros a socios y registrar devoluciones.
-* **Arquitectura Limpia:** Separación de lógica de negocio mediante **Servicios**.
-* **API REST:** Endpoint JSON para consumo externo de datos.
+* **Arquitectura Limpia:** Separación de lógica mediante el patrón **Service Layer**.
+* **API REST:** Endpoint JSON (`/api/listar`) para consumo externo.
 
 ## 🛠️ Tecnologías Utilizadas
 
 * **Python 3**
 * **Flask** (Framework Web)
-* **SQLAlchemy** (ORM para base de datos)
-* **WTForms** (Manejo y validación de formularios)
+* **Flask-SQLAlchemy** (ORM para base de datos)
+* **Flask-Login** (Gestión de sesiones de usuario)
+* **Flask-WTF** (Formularios y validación CSRF)
+* **Werkzeug Security** (Encriptación de contraseñas)
 * **Jinja2** (Motor de plantillas HTML)
-* **SQLite** (Base de datos)
+* **SQLite** (Base de datos ligera)
 
 ## 🏗️ Arquitectura del Proyecto
 
-El proyecto sigue el patrón **MVC (Modelo-Vista-Controlador)** con una capa adicional de **Servicios** para desacoplar la lógica de negocio de las rutas HTTP.
+El proyecto sigue el patrón **MVC (Modelo-Vista-Controlador)** extendido con una capa de **Servicios** y **Decoradores** para mantener el código modular y escalable.
 
-* **Controllers:** Manejan las peticiones HTTP y respuestas (`routes`). No tocan la BD directamente.
-* **Services:** Contienen la lógica de negocio (Crear, buscar, prestar). Interactúan con los Modelos.
-* **Models:** Definición de las tablas de la base de datos.
-* **Templates:** Interfaz de usuario (HTML/CSS).
+* **Controllers:** Manejan las rutas y la respuesta HTTP. Utilizan los servicios.
+* **Services:** Contienen la lógica pura del negocio (CRUD, validaciones complejas).
+* **Models:** Representación de las tablas (Libros, Socios, Usuarios).
+* **Decorators:** Middleware personalizado para verificar permisos de administrador.
 
-### Estructura de Carpetas
+### Estructura de Carpetas Actualizada
 ```text
 python_Reto2/
 ├── app/
-│   ├── controllers/   # Lógica de rutas (Navigation, Libros, Socios, API)
-│   ├── models/        # Modelos de BD (Libro, Socio)
-│   ├── services/      # Lógica de negocio (LibroService, SocioService)
-│   ├── forms/         # Formularios WTForms
-│   ├── templates/     # Archivos HTML (Jinja2)
+│   ├── controllers/   # Auth, Libros, Socios, Navigation, API
+│   ├── models/        # Modelos de BD (Libro, Socio, Usuario)
+│   ├── services/      # Lógica de negocio (AuthService, LibroService...)
+│   ├── decorators/    # Decoradores de permisos (admin_required)
+│   ├── forms/         # Formularios WTForms (Login, Registro, Libros...)
+│   ├── templates/     # Vistas HTML (Jinja2)
 │   └── static/        # CSS, JS, Imágenes
-├── run.py             # Punto de entrada de la aplicación
+├── run.py             # Punto de entrada (Crea DB y Admin automáticos)
 └── requirements.txt   # Dependencias del proyecto

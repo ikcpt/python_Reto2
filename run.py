@@ -8,11 +8,11 @@ def crear_admin_si_no_existe():
         db.create_all()
         admin = AuthService.obtener_por_username('admin')
         if not admin:  
-            print("⚠️ Usuario 'admin' no encontrado. Creando...")
+            print("Usuario 'admin' no encontrado. Creando...")
             AuthService.crear_usuario('admin', 'admin@biblioteca.com', '1234')
-            print("✅ Administrador creado con éxito.")
+            print("Administrador creado con éxito.")
         else:
-            print("ℹ️ El usuario 'admin' ya existe.")
+            print("ℹEl usuario 'admin' ya existe.")
 
 if __name__ == "__main__":
     crear_admin_si_no_existe()

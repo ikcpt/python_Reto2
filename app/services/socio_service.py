@@ -27,3 +27,10 @@ class SocioService:
         socio.email = datos_form.email.data
         db.session.commit()
         return socio
+    
+    @staticmethod
+    def eliminar_socio(id):
+        socio = Socio.query.get_or_404(id)
+        db.session.delete(socio)
+        db.session.commit()
+        return socio

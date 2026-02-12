@@ -35,3 +35,11 @@ def editar(id):
         return redirect(url_for('socios.grid'))
     
     return render_template('paginas/socios/socio_editar.html', form=form, socio=socio)
+    
+@socios_bp.route('/eliminar/<int:id>', methods=['POST'])
+@login_required
+@admin_required
+def eliminar(id):
+    SocioService.eliminar_socio(id)
+    flash('Socio eliminado', 'danger')
+    return redirect(url_for('socios.grid'))
